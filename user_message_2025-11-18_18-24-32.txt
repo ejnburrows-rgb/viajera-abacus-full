@@ -1,0 +1,264 @@
+# Task: Refactor React App - Viajera Digital (Décima Transcription Tool)
+
+## Context
+I have a working React app that transcribes Cuban décima espinela poetry from YouTube videos using LLMs (Claude/GPT via OpenRouter API). The app works but needs 4 critical production-grade upgrades.
+
+**Current Tech Stack:**
+- React 18 with hooks
+- OpenRouter API (multi-model support: Claude 3.5, GPT-4, Gemini)
+- Single-stage LLM prompt
+- Text-based parsing (DECIMA_START/END delimiters)
+- jsPDF export
+- localStorage for API key persistence
+
+**Current Flow:**
+1. User inputs YouTube URL + OpenRouter API key
+2. Single API call transcribes all décimas
+3. Regex parsing extracts verses
+4. Display results + PDF/TXT export
+
+---
+
+## Goal: Implement 4 Production Upgrades
+
+### UPGRADE 1: JSON Schema with Strict Validation ⭐⭐⭐⭐⭐
+
+**Problem:** Text parsing is fragile and error-prone
+
+**Solution:** 
+- Add `response_format: { type: "json_object" }` to OpenRouter API call
+- Define strict JSON schema:
+
+{
+"decimas": [
+{
+"numero": 1,
+"poeta": "Calixto González",
+"versos": ["verso 1 (8 syllables)", "verso 2", ..., "verso 10"],
+"analisis_metrico": {
+"silabas_por_verso": ,
+"sinalefas_detectadas": 3,
+"palabras_finales": ["exilio", "desgarra", "agarra", ...]
+},
+"analisis_cultural": "Brief analysis text"
+}
+],
+"resumen": {
+"total_decimas": 3,
+"notas": "Any difficulties encountered"
+}
+}
+
+text
+
+**Requirements:**
+- Update system prompt to enforce this exact schema
+- Wrap API call in try-catch with JSON.parse() validation
+- Reject responses missing required fields
+- Show clear error if schema is invalid
+
+---
+
+### UPGRADE 2: ABBAACCDDC Rhyme Validator ⭐⭐⭐⭐⭐
+
+**Problem:** No validation that verses actually follow rhyme scheme
+
+**Solution:** Build JavaScript algorithm to validate consonant rhyme
+
+**Algorithm Steps:**
+1. Extract final word from each of 10 verses
+2. Normalize: lowercase, remove accents (á→a), strip punctuation
+3. Extract rhyme sound: substring from last vowel to end
+4. Group verses by scheme: A(1,4,5), B(2,3), C(6,7,10), D(8,9)
+5. Validate: all words in each group must have identical rhyme sound
+
+**Return Object:**
+{
+valid: true,
+errors: [], // or ["Verse 3 doesn't rhyme with group B"]
+groups: {
+"A": { sound: "-ilio", verses: },
+"B": { sound: "-arra", verses: },
+"C": { sound: "-ento", verses: },
+"D": { sound: "-irma", verses: }
+},
+scheme: "ABBAACCDDC"
+}
+
+text
+
+**UI Requirements:**
+- Display warning badge if rhyme is invalid
+- Show rhyme groups visualization
+- Color-code verses by rhyme group
+
+---
+
+### UPGRADE 3: Multi-Stage Agent Pipeline ⭐⭐⭐⭐⭐
+
+**Problem:** Single-shot prompting lacks validation loops
+
+**Solution:** Split into 3 sequential agents with intermediate validation
+
+**Stage 1 - Extraction Agent:**
+- Task: Transcribe all décimas from video
+- Output: JSON with numero, poeta, versos (raw)
+- Temperature: 0.1 (deterministic)
+- Prompt: "Extract ALL décimas from YouTube video. For each: identify number, poet name, and 10 verses exactly as spoken."
+
+**Stage 2 - Validation Agent:**
+- Input: Stage 1 output
+- Task: Validate syllable count (must be 8 per verse)
+- Output: JSON with silabas_por_verso array, sinalefas detected
+- Temperature: 0.3
+- Prompt: "Validate each verse has 8 metric syllables. Detect sinalefas (vowel elision). Adjust for word stress (aguda/grave/esdrújula)."
+
+**Stage 3 - Cultural Analysis Agent:**
+- Input: Stages 1 + 2 outputs
+- Task: Analyze rhyme, cultural context, linguistic patterns
+- Output: Complete JSON with analisis_cultural
+- Temperature: 0.5 (allow creativity)
+- Prompt: "Analyze rhyme scheme ABBAACCDDC, cultural themes, and Cuban Spanish linguistic features."
+
+**Implementation:**
+- Create state: `agentStage` (idle → extracting → validating → analyzing → complete)
+- Create helper: `async callAgent({ stage, prompt, temperature })`
+- Display progress UI with stage indicators: ⏸️ pending, ⏳ active, ✅ complete
+- Handle errors per-stage (don't fail entire pipeline)
+
+---
+
+### UPGRADE 4: Spanish Syllable Counter with Sinalefa Detection ⭐⭐⭐⭐
+
+**Problem:** Current counter just counts vowels (inaccurate)
+
+**Solution:** Implement Spanish prosodic rules
+
+**Algorithm:**
+1. Split verse into words
+2. Count vowels per word (base syllables)
+3. **Detect sinalefas:** If word ends with vowel AND next word starts with vowel → subtract 1 syllable
+   - Example: "de él" → "de_él" = 1 syllable (not 2)
+4. **Adjust for final word stress:**
+   - Aguda (stress on last syllable): +1
+   - Grave (penultimate): no change  
+   - Esdrújula (antepenultimate): -1
+5. Return validation object
+
+**Return:**
+{
+words: 5,
+approximateSyllables: 8,
+sinalefas: [{ position: "palabra1_palabra2", reduction: 1 }],
+stressAdjustment: 0,
+isValid: true
+}
+
+text
+
+**UI Display:**
+- "5 palabras, ~8 síl. ✓" (if valid)
+- "5 palabras, ~7 síl. ⚠️" (if invalid)
+
+---
+
+## Constraints
+
+**PRESERVE:**
+- Vintage brown/cream color scheme (#C8A05C, #5C4033, #F5E6D3)
+- Playfair Display font
+- All Spanish text in UI
+- PDF/TXT export functionality
+- localStorage API key persistence
+- Component structure
+
+**IMPROVE:**
+- Error handling (every async call wrapped in try-catch)
+- Loading states (show progress for each stage)
+- Input validation (YouTube URL, API key format)
+- Edge cases (empty responses, malformed JSON, network errors)
+
+---
+
+## Output Format
+
+Provide refactored React component code with:
+1. All imports at top
+2. Helper functions (validators, parsers, API callers)
+3. Main component with hooks (useState, useEffect, useCallback)
+4. Sub-components (stage indicators, rhyme visualizer, etc.)
+5. Inline comments explaining complex logic
+
+**Code Style:**
+- Modern JavaScript (ES6+, async/await, destructuring)
+- TypeScript types/interfaces where helpful
+- Graceful error handling (no unhandled rejections)
+- Clean, readable code with comments
+
+---
+
+## Success Criteria
+
+✅ JSON parsing never throws unhandled errors  
+✅ Rhyme validator correctly identifies ABBAACCDDC violations  
+✅ Multi-stage pipeline shows clear progress (3 stages visible)  
+✅ Sinalefa detection improves accuracy to 90%+  
+✅ All existing features work (export, storage, etc.)  
+✅ Code is production-ready with proper error handling  
+
+---
+
+## Example Test Case
+
+**Input Video:** YouTube video with Calixto González reciting 3 décimas
+
+**Expected Output:**
+{
+"decimas": [
+{
+"numero": 1,
+"poeta": "Calixto González",
+"versos": [
+"En la tierra del exilio",
+"donde el alma se desgarra",
+"y la nostalgia se agarra",
+"como un eterno cautilo",
+"yo le canto a mi destino",
+"con voz de claro acento",
+"que rescata el sentimiento",
+"de mi patria que confirma",
+"lo que el corazón afirma",
+"en cada verso que siento"
+],
+"analisis_metrico": {
+"silabas_por_verso": ,
+"sinalefas_detectadas": 2,
+"palabras_finales": ["exilio","desgarra","agarra","cautilo","destino","acento","sentimiento","confirma","afirma","siento"]
+},
+"analisis_cultural": "Décima sobre el tema del exilio cubano con rima consonante perfecta ABBAACCDDC."
+}
+],
+"resumen": {
+"total_decimas": 3,
+"notas": "Audio claro, transcripción completa."
+}
+}
+
+text
+
+**Rhyme Validation Result:**
+{
+valid: true,
+groups: {
+"A": { sound: "-ilio", verses: }, // exilio, cautilo, destino
+"B": { sound: "-arra", verses: }, // desgarra, agarra
+"C": { sound: "-ento", verses: }, // acento, sentimiento, siento
+"D": { sound: "-irma", verses: } // confirma, afirma
+}
+}
+
+text
+
+---
+
+Generate the complete refactored code now.

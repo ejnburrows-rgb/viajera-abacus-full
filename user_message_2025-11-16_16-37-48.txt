@@ -1,0 +1,258 @@
+Build a complete web application called "El Guajiro de Hialeah" – a YouTube transcriber and analysis tool for Cuban décima espinela.
+
+MVP REQUIREMENT:
+Use my own Perplexity Pro account on the backend (I will provide API key or env variable) to call Claude Sonnet through Perplexity Max for transcription and analysis. All UI and outputs must be in Spanish.
+
+═══════════════════════════════════════════════════════════════════════════════
+PORTADA INICIAL CON CALIXTO GONZÁLEZ
+═══════════════════════════════════════════════════════════════════════════════
+
+Background Image:
+- Use a full-width image of Calixto González seated at the port with ships in the background (vintage/sepia aesthetic). This image should fill the entire first viewport height and be responsive.
+
+Overlay Content (Centered, semi-transparent cream card #F5E6D3):
+- Palm tree emoji: 🌴
+- Title: "Guajiro de Hialeah" (large, gold/brown #C8A05C)
+- Subtitle: "EST 1936"
+- Tagline (4 lines, italicized):
+  "Un algoritmo que siente la pasión del poeta,
+   rescata del olvido cada improvisación,
+   preserva intacta la lírica del corazón,
+   y eterniza el arte vivo de la décima completa."
+- Attribution line:
+  "© Emilio José Novo | juanantoniodiaz.com | Acerca de"
+
+Below this portada:
+
+Section: "Tributo a Calixto González, el Verdadero Guajiro de Hialeah"
+
+Show the décima by Juan Antonio Díaz, centered, elegant serif font (Georgia or Playfair), with proper line breaks:
+
+Hoy que te vas con la muerte
+hacia una casa de cielo,
+la sequía del pañuelo
+en ríos se nos convierte.
+Y aunque no podamos verte
+jamás, en la canturía,
+no existirá un solo día
+que se hable de ejemplo de Hombre
+que no se escuche tu nombre,
+Guajiro de Hialeah.
+
+— Juan Antonio Díaz
+
+Below the tribute, display navigation tabs:
+- 📝 Procesar Transcripción
+- 📖 Décimas Formateadas
+- 📊 Análisis Completo
+- ⬇️ Exportar Resultados
+- 📚 Educación Histórica
+
+═══════════════════════════════════════════════════════════════════════════════
+SECTION 1: PROCESAR TRANSCRIPCIÓN
+═══════════════════════════════════════════════════════════════════════════════
+
+Goal: User pastes a YouTube link, and the app automatically processes the video to produce all analyses.
+
+UI:
+- Large text input with placeholder: "Pega aquí el enlace de YouTube"
+- Primary button: "Procesar" (orange-brown #D2691E)
+- Show video preview (thumbnail, title, duration) after validation.
+- Progress bar with steps (in Spanish):
+  "Descargando vídeo" → "Transcribiendo audio" → "Identificando décimas y poetas" → "Analizando estructura y métrica" → "Generando informe completo"
+- Show success toast: "¡Análisis completado!"
+- Show clear error messages in Spanish if the link is invalid or processing fails.
+
+Backend logic:
+- Validate YouTube URL.
+- Extract audio (e.g. with yt-dlp or similar).
+- Send audio to Perplexity Max (Claude Sonnet) using my Perplexity Pro credentials on the server.
+- Ask Sonnet to:
+  - Transcribe the audio in Spanish.
+  - Segment into candidate verses.
+  - Group verses into décimas of 10 lines.
+  - Identify rhyme pattern ABBAACCDDC.
+  - Estimate syllable counts (octosyllabic lines).
+  - Assign décimas to poets/speakers when possible.
+  - Compute metrics for technical quality, creativity, cultural richness, emotional impact.
+  - Produce structured JSON for all sections below.
+
+═══════════════════════════════════════════════════════════════════════════════
+SECTION 2: DÉCIMAS FORMATEADAS
+═══════════════════════════════════════════════════════════════════════════════
+
+At the top, show:
+- "Título del vídeo: [Video Title]"
+- "Duración: [Duration]"
+- "Poetas identificados: [List of names]"
+- "Fecha de análisis: [Date]"
+- "Tiempo de procesamiento: [X minutos]"
+
+For each poet:
+Show a heading:
+"[NOMBRE DEL POETA] – Turno [X]"
+
+For each décima of that poet:
+- Heading: "Décima [número]:"
+- Then show 10 lines, each as a separate line of text, with the décima as reconstructed/adjusted to 8 syllables per line.
+- After the 10 lines, show:
+  "Esquema de rima: ABBAACCDDC"
+  "Métrica: Octosílabos"
+  "Marca de tiempo: [mm:ss – mm:ss]"
+
+If a décima is incomplete or irregular, clearly indicate it (e.g. "Décima incompleta" or "Estructura irregular").
+
+═══════════════════════════════════════════════════════════════════════════════
+SECTION 3: ANÁLISIS COMPLETO
+═══════════════════════════════════════════════════════════════════════════════
+
+RESUMEN DE LA CANTURÍA:
+- Generate 2–3 paragraphs summarizing:
+  - Main themes
+  - Tone and emotional energy
+  - Interaction between poets
+  - Overall poetic quality and impact
+
+TOP 3 DÉCIMAS POR POETA:
+For each poet:
+- Rank all their décimas and select the top 3.
+- For each top décima, show:
+  - Full 10-line text
+  - "Maestría técnica": discuss rhyme pattern, meter, any deliberate variations.
+  - "Dispositivos poéticos": identify metaphors, alliteration, personification, wordplay, hyperbole, etc.
+  - "Elementos culturales": identify Cuban regionalisms, references to history, geography, religion, politics, folk culture.
+  - "Resonancia emocional": explain the emotional effect.
+  - "Improvisación": explain how the décima responds to previous verses or themes.
+  - "Por qué está en el Top 3": justify its selection.
+
+ANÁLISIS PROFUNDO:
+Produce a synthetic analysis with:
+- "Temas recurrentes"
+- "Regionalismos y dialectos"
+- "Sofisticación lingüística"
+- "Técnicas de improvisación observadas"
+- "Comparación con el canon cubano"
+- "Significancia cultural"
+
+═══════════════════════════════════════════════════════════════════════════════
+SECTION 4: EXPORTAR RESULTADOS
+═══════════════════════════════════════════════════════════════════════════════
+
+Provide buttons:
+- "📥 Descargar PDF": generate a PDF of all content (portada, tribute, décimas, análisis, educación histórica, acerca de), matching the app’s vintage design and colors.
+- "📧 Enviar por Email": send a link and/or PDF to the user’s email.
+- "🔗 Compartir Link": generate a shareable read-only URL.
+- "📋 Copiar al Portapapeles": copy a textual summary + link.
+
+Use client-side PDF generation (e.g. jsPDF) or a simple backend PDF service.
+
+═══════════════════════════════════════════════════════════════════════════════
+SECTION 5: EDUCACIÓN HISTÓRICA
+═══════════════════════════════════════════════════════════════════════════════
+
+Include static educational content in Spanish:
+
+Sobre la Décima Espinela:
+- Define as 10 octosyllabic lines with ABBAACCDDC rhyme scheme.
+- Briefly explain the structure.
+
+Origen Español (1591):
+- Describe Vicente Espinel’s role.
+- Mention Lope de Vega and the Siglo de Oro.
+
+Historia en Cuba:
+- Primer indicio: Espejo de paciencia (1608).
+- Consolidación: siglo XVIII, ligada a inmigración canaria y punto guajiro.
+- Evolución: from elite written poetry to rural and then urban oral improvisation.
+- Modernización: 20th century popularization.
+
+Figuras Históricas:
+Include short paragraphs on:
+- El Cucalambé
+- Plácido
+- El Indio Naborí (Jesús Orta Ruiz)
+- Justo Vega
+- Adolfo Alfonso
+- Pablo León
+- Chanito Isidron
+- Juan Antonio Díaz
+- Luis Quintana
+- Yoslay García
+- Leandro Camargo
+- Oniesis Gil
+- Julio Pablo
+
+Momento Cumbre: 1955:
+- Describe the legendary debates between El Indio Naborí and Angelito Valiente in San Antonio de los Baños.
+
+Proeza Técnica:
+- Explain the 52-second challenge to compose a perfect décima with correct meter, rhyme, coherence, and beauty.
+
+Patrimonio Cultural:
+- Summarize UNESCO recognition in 2012 as intangible heritage and why it matters.
+
+═══════════════════════════════════════════════════════════════════════════════
+ACERCA DE (MODAL)
+═══════════════════════════════════════════════════════════════════════════════
+
+Create a modal accessible from "Acerca de" in the header or footer:
+
+- Header: "🌴 Acerca de"
+- Main text explaining that Guajiro de Hialeah is dedicated to the preservation and analysis of Cuban décima espinela.
+- Subsection "🌴 Misión de preservación":
+  - 3–4 paragraphs about preserving this living art, rescuing improvisations from oblivion, honoring the guajiro’s lyrical heart, and eternalizing the décima.
+- Closing tribute:
+  "🌴 A todos los poetas que han dedicado sus vidas a mantener viva la décima: su voz sigue cantando en cada verso que procesamos aquí."
+- Footer:
+  - "Creada por: Emilio José Novo"
+  - "Web: juanantoniodiaz.com"
+  - "Versión: 2.0 Pro"
+  - "Licencia: Creative Commons (Uso libre con atribución)"
+
+═══════════════════════════════════════════════════════════════════════════════
+DESIGN & BRANDING
+═══════════════════════════════════════════════════════════════════════════════
+
+COLOR PALETTE:
+- Primary: #C8A05C
+- Secondary: #5C4033
+- Background: #F5E6D3
+- Buttons: #D2691E
+- Text: dark brown on light, cream on dark
+
+TYPOGRAPHY:
+- Headers: serif (Georgia, Playfair Display)
+- Body: sans-serif (Arial, Helvetica)
+- Use palm tree emoji 🌴 as a recurring brand symbol.
+
+Layout:
+- Vintage sepia background
+- Cream cards with rounded corners
+- Gold dividers between sections
+- Fully mobile-responsive and print-friendly.
+
+═══════════════════════════════════════════════════════════════════════════════
+TECHNICAL IMPLEMENTATION (MVP)
+═══════════════════════════════════════════════════════════════════════════════
+
+Backend:
+- Small API service (Node.js or Python) that:
+  - Accepts YouTube URL.
+  - Uses yt-dlp to extract audio.
+  - Sends audio or its transcript to Perplexity Max (Claude Sonnet) using my Perplexity Pro API key (stored securely in environment variables).
+  - Receives structured JSON with all décimas and analysis.
+  - Returns this JSON to the frontend.
+
+Frontend:
+- Single-page web app with the sections and design defined above.
+- Handles progress display, error handling, and rendering all sections.
+- Generates PDF client-side (jsPDF) or via backend.
+
+Constraints:
+- No need to store data in a database for MVP; hold in memory or session.
+- All UI text must be in Spanish.
+- Processing time target: 2–5 minutes per typical video.
+- Code should be clean and ready for deployment.
+
+DELIVERABLE:
+A fully functional, demo-ready web app "El Guajiro de Hialeah" deployed and accessible via a public URL, implementing all sections and behaviors above.

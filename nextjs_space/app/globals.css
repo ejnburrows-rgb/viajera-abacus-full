@@ -1,0 +1,140 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --primary: #C8A05C;
+    --secondary: #5C4033;
+    --background: #F5E6D3;
+    --button: #D2691E;
+    --accent: #8B4513;
+  }
+  
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    @apply bg-[#F5E6D3] text-[#5C4033];
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+  
+  .vintage-background {
+    background: linear-gradient(135deg, #F5E6D3 0%, #E6D7C1 50%, #DDD0B8 100%);
+  }
+  
+  .sepia-effect {
+    filter: sepia(0.3) contrast(1.1) brightness(1.05);
+  }
+  
+  .gold-gradient {
+    background: linear-gradient(135deg, #C8A05C 0%, #D4AF37 50%, #B8860B 100%);
+  }
+  
+  .palm-pattern::before {
+    content: "🌴";
+    position: absolute;
+    opacity: 0.1;
+    font-size: 2rem;
+  }
+  
+  .scroll-smooth {
+    scroll-behavior: smooth;
+  }
+  
+  /* Cuban vintage styling */
+  .cuban-card {
+    @apply bg-white/90 backdrop-blur-sm border-2 border-[#C8A05C]/20 rounded-lg shadow-lg;
+  }
+  
+  .cuban-button {
+    @apply bg-[#D2691E] text-white font-semibold px-6 py-3 rounded-lg shadow-md hover:bg-[#B8860B] transition-all duration-300 transform hover:scale-105;
+  }
+  
+  .decima-text {
+    font-family: 'Playfair Display', serif;
+    @apply text-[#5C4033] leading-relaxed;
+  }
+  
+  .nav-tab {
+    @apply px-4 py-2 rounded-t-lg font-medium text-[#5C4033] hover:bg-[#C8A05C]/20 transition-colors duration-200;
+  }
+  
+  .nav-tab.active {
+    @apply bg-[#C8A05C] text-white;
+  }
+  
+  .progress-bar {
+    @apply w-full bg-[#E6D7C1] rounded-full h-3 overflow-hidden;
+  }
+  
+  .progress-bar-fill {
+    @apply bg-gradient-to-r from-[#C8A05C] to-[#D2691E] h-full transition-all duration-500 ease-out;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #F5E6D3;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #C8A05C;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #D2691E;
+}
+
+/* Animation keyframes */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes countUp {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.fade-in-up {
+  animation: fadeInUp 0.8s ease-out forwards;
+}
+
+.count-up {
+  animation: countUp 0.6s ease-out forwards;
+}
+
+/* Parallax scroll effect */
+.parallax-bg {
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+@media (max-width: 768px) {
+  .parallax-bg {
+    background-attachment: scroll;
+  }
+}
